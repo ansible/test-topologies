@@ -1,8 +1,6 @@
----
-title: CONT-A.ENV-A - Standard Containerized Deployment
----
+# CONT-A.ENV-A - Standard Containerized Deployment
 
-# Containerized single VM deployment
+## Containerized single VM deployment
 
 ## Topology
 

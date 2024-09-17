@@ -1,8 +1,6 @@
----
-title: RPM-B.ENV-A - Enterprise RPM Deployment
----
+# RPM-B.ENV-A - Enterprise RPM Deployment
 
-# Enterprise VM installer - RPM B
+## Enterprise VM installer - RPM B
 
 ## Topology
 
