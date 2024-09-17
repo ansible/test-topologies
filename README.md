@@ -47,7 +47,7 @@ Due to business requirements, we have opted to support environments both fully u
 
 RPM installations are the "classic" way of installing AAP. This always requires multiple VMs; how many is based on which deployment type is chosen.
 
-##### Standard RPM Deployment [(RPM-A)](rpm-a.env-a.md)
+##### Standard RPM Deployment [(RPM-A)](rpm-a.env-a/README.md)
 
 - 1 VM for AAP Gateway / Unified UI
 - 1 VM for Automation Controller
@@ -56,7 +56,7 @@ RPM installations are the "classic" way of installing AAP. This always requires 
 - 1 VM for Automation Mesh Execution Node
 - 1 VM Managed Database
 
-##### Enterprise RPM Deployment [(RPM-B)](rpm-b.env-a.md)
+##### Enterprise RPM Deployment [(RPM-B)](rpm-b.env-a/README.md)
 
 - 2 VMs for AAP Gateway / Unified UI
 - 2 VMs for Automation Controller
@@ -71,13 +71,13 @@ RPM installations are the "classic" way of installing AAP. This always requires 
 
 Containerized installations are being fully supported starting with AAP 2.5. There is both a "single" VM option, requiring very limited infrastructure as well as the "enterprise" deployment, requiring the same number of VMs as the RPM install method.
 
-##### Single VM Deployment [(CONT-A)](cont-a.env-a.md)
+##### Single VM Deployment [(CONT-A)](cont-a.env-a/README.md)
 
 - All components collocated on a single VM or "All in One (aio)"
 - 1 VM for AAP Gateway / Unified UI, Controller, Private Automation Hub, EDA, Managed Database
   - Each component is on a single container
 
-##### Enterprise Containerized [(CONT-B)](cont-b.env-a.md)
+##### Enterprise Containerized [(CONT-B)](cont-b.env-a/README.md)
 
 - 2 VMs for AAP Gateway / Unified UI - with redis
 - 2 VMs for Automation Controller
@@ -106,7 +106,7 @@ Openshift installations require a Red Hat subscription to Red Hat Openshift Cont
 
 - Operator defaults for the deployment
 
-##### Enterprise Deployment [(OCP-B)](ocp-b.env-a.md)
+##### Enterprise Deployment [(OCP-B)](ocp-b.env-a/README.md)
 
 - This specific deployment matches both "Enterprise" OCP and what we provide for our SaaS (AAP as a Service) customers.
   - 1 pod for AAP Gateway / Unified UI
