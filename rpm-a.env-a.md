@@ -1,0 +1,184 @@
+---
+title: RPM-A.ENV-A - Standard RPM Deployment
+---
+
+# Single VM per AAP Component
+
+## Topology
+
+```mermaid
+%%{ init: { 'theme': 'default', 'graph': { 'htmlLabels': true }, 'themeVariables': { 'fontSize': '10px', 'nodePadding': '2px', 'edgeWidth': '1px' } } }%%
+
+
+graph TB
+  subgraph main[<b>Ansible Automation Platform</b>]
+
+  subgraph id1[ ]
+    id2([Gateway])
+  end
+  subgraph id3[Automation Mesh]
+    subgraph id4[ ]
+      id5([Controller])
+    end
+
+    id7([Execution Node])
+  end
+
+  subgraph id8[ ]
+    id9([Automation Hub])
+  end
+  subgraph id10[ ]
+    id11([EDA])
+  end
+  id12[(Managed Databse)]
+ end
+
+
+id10--> |Port 443|id4
+id1 <--> |Port 443| id3
+id4--> |Port 443/80|id9
+
+
+
+id1 & id9 & id11-->|Port 5432|id12
+
+
+id5<-->|Port 27199|id7
+id4 -->|Port 5432|id12
+
+
+classDef title font-size:15px;
+
+
+
+
+class main title;
+
+
+```
+
+**_Legend:_**
+
+```mermaid
+
+%%{ init: { 'theme': 'default', 'graph': { 'htmlLabels': true }, 'themeVariables': { 'fontSize': '15px', 'nodePadding': '2px', 'edgeWidth': '1px' } } }%%
+
+graph
+  subgraph legend
+    direction TB
+
+   Y([ VM  ])
+   Z[VM per component]
+  end
+
+
+
+classDef hide fill:#0000,stroke:#0000,stroke-width:0px;
+classDef hide-font color:#0000;
+class Y,legend hide-font;
+class Z,legend hide;
+
+
+
+```
+
+## Description
+
+The **Single VM per AAP Component** consists of the following:
+
+| Component             | VM count |
+| --------------------- | -------- |
+| AAP Gateway           | 1        |
+| Automation Controller | 1        |
+| Hop Node (optional)   | 1        |
+| Automation Hub        | 1        |
+| Event Driven Ansible  | 1        |
+| Database (external)   | 1        |
+| Redis Cache (non-HA)  | 1        |
+
+## Inventory
+
+```
+[automationcontroller]
+automationcontroller-0 ansible_user=ec2-user ansible_python_interpreter="/usr/libexec/platform-python" ansible_host=<<replace with controller ip>>
+
+[automationhub]
+automationhub-0 ansible_user=ec2-user ansible_python_interpreter="/usr/libexec/platform-python" ansible_host=<<replace with hub ip>>
+
+[automationedacontroller]
+automationedacontroller-0 ansible_user=ec2-user ansible_python_interpreter="/usr/libexec/platform-python" ansible_host=<<replace with eda controller ip>> routable_hostname=automationedacontroller-0
+
+[automationgateway]
+automationgateway-0 ansible_user=ec2-user ansible_python_interpreter="/usr/libexec/platform-python" ansible_host=<<replace with gateway ip>> routable_hostname=automationgateway-0
+
+[execution_nodes]
+execution_node-0 ansible_user=ec2-user ansible_python_interpreter="/usr/libexec/platform-python" ansible_host=<<replace with execution node ip>> routable_hostname=execution_node-0
+
+[database]
+database-0 ansible_user=ec2-user ansible_python_interpreter="/usr/libexec/platform-python" ansible_host=<<replace with db ip>> routable_hostname=database-0
+
+
+[installer]
+installer_machine ansible_connection=local ansible_python_interpreter="/usr/libexec/platform-python"
+
+
+[all:vars]
+pg_host=database-0
+pg_port=5432
+pg_database=awx
+pg_username=awx
+admin_password=<<replace with admin password>>
+pg_password=<<replace with pg password>>
+controller_base_url=https://controllerurl/
+hub_base_url=https://huburl/
+gateway_base_url=https://gatewayurl/
+automationedacontroller_base_url=https://edaurl/
+required_ram=0
+automationhub_pg_host=database-0
+automationhub_pg_port=5432
+automationhub_pg_database=automationhub
+automationhub_pg_username=automationhub
+automationhub_admin_password=<<replace with admin password for the hub>>
+automationhub_pg_password=<<replace with pg password for the hub>>
+automationedacontroller_pg_host=database-0
+automationedacontroller_pg_port=5432
+automationedacontroller_pg_database=automationedacontroller
+automationedacontroller_pg_username=automationedacontroller
+automationedacontroller_allowed_hostnames=['52.87.176.180']
+automationedacontroller_admin_password=<<replace with admin password for the eda controller>>
+automationedacontroller_pg_password=<<replace with pg password for the eda controller>>
+eda_node_type=hybrid
+automationgateway_pg_host=database-0
+automationgateway_pg_port=5432
+automationgateway_pg_database=gateway
+automationgateway_pg_username=gateway
+automationgateway_admin_password=<<replace with admin password for the gateway>>
+automationgateway_pg_password=<<replace with pg password for the gateway>>
+automationhub_create_default_collection_signing_service=True
+automationhub_require_content_approval=True
+automationhub_auto_sign_collections=True
+automationhub_collection_signing_service_key=/tmp/setup/ahub_content_signing.gpg
+automationhub_collection_signing_service_script=/tmp/setup/ahub_content_signing_script
+automationhub_create_default_container_signing_service=True
+automationhub_container_signing_service_key=/tmp/setup/ahub_content_signing.gpg
+automationhub_container_signing_service_script=/tmp/setup/ahub_container_signing_script
+
+[automationcontroller:vars]
+receptor_listener=True
+receptor_listener_protocol=tcp
+receptor_log_level=info
+node_type=control
+
+[automationgateway:vars]
+automationgateway_grpc_server_processes=20
+automationgateway_grpc_server_max_threads_per_process=40
+automationgateway_grpc_auth_service_timeout=120s
+
+[execution_nodes:vars]
+receptor_listener=True
+receptor_listener_protocol=tcp
+receptor_log_level=info
+peers=automationcontroller
+node_type=execution
+
+```
