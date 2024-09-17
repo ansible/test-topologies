@@ -1,8 +1,6 @@
----
-title: CONT-B.ENV-A - Enterprise Containerized Deployment
----
+# CONT-B.ENV-A - Enterprise Containerized Deployment
 
-# Containerized multi VM deployment
+## Containerized multi VM deployment
 
 ## Topology
 

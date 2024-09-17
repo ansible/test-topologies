@@ -1,8 +1,6 @@
----
-title: OCP-B.ENV-A - Enterprise Deployment - OpenShift - AAP Operator Install Method
----
+# OCP-B.ENV-A - Enterprise Deployment - OpenShift - AAP Operator Install Method
 
-# Enterprise OpenShift - AAP Operator Install - OCP B
+## Enterprise OpenShift - AAP Operator Install - OCP B
 _SaaS Deployment used to represent ocp "enterprise" deployment_
 
 ## Topology

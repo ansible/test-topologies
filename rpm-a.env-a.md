@@ -1,8 +1,6 @@
----
-title: RPM-A.ENV-A - Standard RPM Deployment
----
+# RPM-A.ENV-A - Standard RPM Deployment
 
-# Single VM per AAP Component
+## Single VM per AAP Component
 
 ## Topology
 
