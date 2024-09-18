@@ -91,8 +91,8 @@ The **Enterprise OpenShift - AAP Operator Install** model consists of the follow
 | Component                                     | Pod count                      |
 | --------------------------------------------- | ------------------------------ |
 | AAP Gateway 2.5                               | 1                              |
-| Automation Controller 2.5                     | 2 *(task, web)*                |
-| Automation Hub 2.5                            | 5 *(api,content,web,2workers)* |
+| Automation Controller 2.4                     | 2 *(task, web)*                |
+| Automation Hub 2.4                            | 5 *(api,content,web,2workers)* |
 | Event Driven Ansible 2.5                      | x                              |
 | Database (external)                           | 1                              |
 | Redis Cache (non-HA)                          | 1                              |

@@ -126,10 +126,10 @@ The **AAP Components deployed inside a container** consists of the following:
 | Component                                     | VM count |
 | --------------------------------------------- | -------- |
 | AAP Gateway 2.5                               | 2        |
-| Automation Controller 2.5                     | 2        |
+| Automation Controller 2.4                     | 2        |
 | Hop Node                                      | 1        |
 | Execution Node                                | 2        |
-| Automation Hub 2.5                            | 2        |
+| Automation Hub 2.4                            | 2        |
 | Event Driven Ansible 2.5                      | 2        |
 | Database (external)                           | 1        |
 | Redis Cache (non-HA)                          | 1        |

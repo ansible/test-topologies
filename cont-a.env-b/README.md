@@ -85,7 +85,7 @@ The **AAP Components deployed inside a container** consists of the following:
 | Component                | VM count |
 | ---------------------    | -------- |
 | AAP Gateway 2.5          | 1        |
-| Automation Controller 2.5| 1        |
-| Automation Hub 2.5       | 1        |
+| Automation Controller 2.4| 1        |
+| Automation Hub 2.4       | 1        |
 | Event Driven Ansible 2.5 | 1        |
 | Database                 | 1        |
