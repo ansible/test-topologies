@@ -4,6 +4,8 @@
 
 ## Topology
 
+![ Enterprise RPM Deployment - Topology](RPM-B_Env-A.png)
+
 ```mermaid
 %%{ init: { 'theme': 'default', 'graph': { 'htmlLabels': true }, 'themeVariables': { 'fontSize': '10x', 'nodePadding': '0px', 'edgeWidth': '0px' } } }%%
 
