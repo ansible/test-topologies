@@ -98,7 +98,7 @@ Any Red Hat managed deployment will be considered "Enterprise", thus there is no
 
 Openshift installations require a Red Hat subscription to Red Hat Openshift Container Platform. Deploying on OCP is only supported via the Operator available in the OCP Operator Marketplace.
 
-##### Standard Deployment [(OCP-A)]
+##### Standard Deployment [(OCP-A-ENV-A)](ocp-a.env-a/README.md)
 
 - Operator defaults for the deployment
 

@@ -1,4 +1,4 @@
-# RPM-A.ENV-A - Standard RPM Deployment
+# RPM-A.ENV-B - Standard RPM Deployment
 
 ## Single VM per AAP Component
 
