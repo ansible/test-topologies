@@ -1,81 +1,8 @@
-# RPM-B.ENV-A - Enterprise RPM Deployment
+# RPM-B.ENV-B - Enterprise RPM Deployment
 
 ## Enterprise VM installer - RPM B
 
 ## Inventory
 
 ```
-# This is the AAP growth installer inventory file
-# Please consult the docs if you're unsure what to add
-# For all optional variables please consult the Red Hat documentation:
-# https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/2.5/html/rpm_installation
-
-# This section is for your AAP Gateway host(s)
-# -----------------------------------------------------
-[automationgateway]
-gateway.example.org
-
-# This section is for your AAP Controller host(s)
-# -----------------------------------------------------
-[automationcontroller]
-controller.example.org
-
-[automationcontroller:vars]
-peers=execution_nodes
-
-# This section is for your AAP Execution host(s)
-# -----------------------------------------------------
-[execution_nodes]
-exec.example.org
-
-# This section is for your AAP Automation Hub host(s)
-# -----------------------------------------------------
-[automationhub]
-hub.example.org
-
-# This section is for your AAP EDA Controller host(s)
-# -----------------------------------------------------
-[automationedacontroller]
-eda.example.org
-
-# This section is for the AAP database
-# -----------------------------------------------------
-[database]
-db.example.org
-
-[all:vars]
-
-# Common variables
-# https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/2.5/html/rpm_installation/appendix-inventory-files-vars#ref-general-inventory-variables
-# -----------------------------------------------------
-registry_username=<your RHN username>
-registry_password=<your RHN password>
-
-# AAP Gateway
-# https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/2.5/html/rpm_installation/appendix-inventory-files-vars#ref-gateway-variables
-# -----------------------------------------------------
-automationgateway_admin_password=<set your own>
-automationgateway_pg_host=db.example.org
-automationgateway_pg_password=<set your own>
-
-# AAP Controller
-# https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/2.5/html/rpm_installation/appendix-inventory-files-vars#ref-controller-variables
-# -----------------------------------------------------
-admin_password=<set your own>
-pg_host=db.example.org
-pg_password=<set your own>
-
-# AAP Automation Hub
-# https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/2.5/html/rpm_installation/appendix-inventory-files-vars#ref-hub-variables
-# -----------------------------------------------------
-automationhub_admin_password=<set your own>
-automationhub_pg_host=db.example.org
-automationhub_pg_password=<set your own>
-
-# AAP EDA Controller
-# https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/2.5/html/rpm_installation/appendix-inventory-files-vars#event-driven-ansible-controller
-# -----------------------------------------------------
-automationedacontroller_admin_password=<set your own>
-automationedacontroller_pg_host=db.example.org
-automationedacontroller_pg_password=<set your own>
 ```

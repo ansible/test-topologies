@@ -1,4 +1,6 @@
-# RPM-B.ENV-B - Enterprise RPM Deployment
+# RPM-B.ENV-B - Mixed Version Enterprise RPM Deployment
+
+## Mixed Version Enterprise RPM Deployment
 
 ## Enterprise VM installer - RPM B
 

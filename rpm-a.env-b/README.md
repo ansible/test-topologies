@@ -1,6 +1,6 @@
-# RPM-A.ENV-B - Standard RPM Deployment
+# RPM-A.ENV-B - Mixed Version RPM Deployment
 
-## Single VM per AAP Component
+## Mixed Version Single VM per AAP Component
 
 ## Topology
 
