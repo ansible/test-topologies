@@ -1,7 +1,3 @@
----
-title: Supported Topologies
----
-
 # Infrastructure Topologies
 
 This document outlines the architecture of different deployment topology setups on which our CI tests will run, providing a comprehensive overview of these setups, their components, interactions, and the rationale behind the design choices.
