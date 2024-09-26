@@ -3,60 +3,75 @@
 ## Inventory 
 
 ```
-[automationcontroller]
-automationcontroller-0 ansible_user=ec2-user ansible_python_interpreter="/usr/libexec/platform-python" ansible_host=<<replace with controller ip>>
+# This is the AAP growth installer inventory file
+# Please consult the docs if you're unsure what to add
+# For all optional variables please consult the included README.md
+# or the Red Hat documentation:
+# https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/2.5/html/containerized_installation
 
-[automationhub]
-automationhub-0 ansible_user=ec2-user ansible_python_interpreter="/usr/libexec/platform-python" ansible_host=<<replace with hub ip>>
-
-[automationedacontroller]
-automationedacontroller-0 ansible_user=ec2-user ansible_python_interpreter="/usr/libexec/platform-python" ansible_host=<<replace with eda controller ip>> routable_hostname=automationedacontroller-0
-
+# This section is for your AAP Gateway host(s)
+# -----------------------------------------------------
 [automationgateway]
-automationgateway-0 ansible_user=ec2-user ansible_python_interpreter="/usr/libexec/platform-python" ansible_host=<<replace with gateway ip>> routable_hostname=automationgateway-0
+aap.example.org
 
+# This section is for your AAP Controller host(s)
+# -----------------------------------------------------
+[automationcontroller]
+aap.example.org
+
+# This section is for your AAP Automation Hub host(s)
+# -----------------------------------------------------
+[automationhub]
+aap.example.org
+
+# This section is for your AAP EDA Controller host(s)
+# -----------------------------------------------------
+[automationeda]
+aap.example.org
+
+# This section is for the AAP database
+# -----------------------------------------------------
 [database]
-database-0 ansible_user=ec2-user ansible_python_interpreter="/usr/libexec/platform-python" ansible_host=<<replace with db ip>> routable_hostname=database-0
-
-
-[installer]
-installer_machine ansible_connection=local ansible_python_interpreter="/usr/libexec/platform-python"
-
+aap.example.org
 
 [all:vars]
-controller_admin_password=<< Controller admin password >>
-controller_pg_host=aio-0.testing.com
-controller_pg_password=<< Controller pg password >>
-eda_admin_password=<< eda admin password >>
-eda_pg_host=aio-0.testing.com
-eda_pg_password=<< eda pg password >>
-eda_type=hybrid
-hub_pg_host=aio-0.testing.com
-hub_pg_port=5432
-hub_pg_database=automationhub
-hub_pg_username=automationhub
-hub_pg_password=<< hub pg password >>
-hub_admin_password=<< hub admin password >>
-gateway_admin_password=<< gateway admin password >>
-gateway_pg_host=aio-0.testing.com
-gateway_pg_password=<< gateway pg password >>
-postgresql_admin_password=<< postgresql admin password >>
-controller_base_url=https://controller ip/
-gateway_base_url=https://gateway ip/
-hub_base_url=https://hub ip/
-automationedacontroller_base_url=https://eda ip/
-controller_local_resource_management=True
-hub_local_resource_management=True
-eda_local_resource_management=True
-registry_auth=True
-registry_url=brew.registry.redhat.io
-registry_ns_aap=rh-osbs
-registry_ns_rhel=rh-osbs
-registry_tls_verify=True
 
-[automationgateway:vars]
-gateway_grpc_server_processes=20
-gateway_grpc_server_max_threads_per_process=40
-gateway_grpc_auth_service_timeout=120s
+# Common variables
+# https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/2.5/html/containerized_installation/appendix-inventory-files-vars#ref-general-inventory-variables
+# -----------------------------------------------------
+postgresql_admin_username=postgres
+postgresql_admin_password=<set your own>
 
+registry_username=<your RHN username>
+registry_password=<your RHN password>
+
+redis_mode=standalone
+
+# AAP Gateway
+# https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/2.5/html/containerized_installation/appendix-inventory-files-vars#ref-gateway-variables
+# -----------------------------------------------------
+gateway_admin_password=<set your own>
+gateway_pg_host=aap.example.org
+gateway_pg_password=<set your own>
+
+# AAP Controller
+# https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/2.5/html/containerized_installation/appendix-inventory-files-vars#ref-controller-variables
+# -----------------------------------------------------
+controller_admin_password=<set your own>
+controller_pg_host=aap.example.org
+controller_pg_password=<set your own>
+
+# AAP Automation Hub
+# https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/2.5/html/containerized_installation/appendix-inventory-files-vars#ref-hub-variables
+# -----------------------------------------------------
+hub_admin_password=<set your own>
+hub_pg_host=aap.example.org
+hub_pg_password=<set your own>
+
+# AAP EDA Controller
+# https://docs.redhat.com/en/documentation/red_hat_ansible_automation_platform/2.5/html/containerized_installation/appendix-inventory-files-vars#event-driven-ansible-controller
+# -----------------------------------------------------
+eda_admin_password=<set your own>
+eda_pg_host=aap.example.org
+eda_pg_password=<set your own>
 ```

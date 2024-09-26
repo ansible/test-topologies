@@ -71,13 +71,13 @@ RPM installations are the "classic" way of installing AAP. This always requires 
 
 Containerized installations are being fully supported starting with AAP 2.5. There is both a "single" VM option, requiring very limited infrastructure as well as the "enterprise" deployment, requiring the same number of VMs as the RPM install method.
 
-##### Single VM Deployment [(CONT-A-ENV-A)](cont-a.env-a/README.md) [(CONT-A-ENV-B)](cont-a.env-a/README.md)
+##### Single VM Deployment [(CONT-A-ENV-A)](cont-a.env-a/README.md)
 
 - All components collocated on a single VM or "All in One (aio)"
 - 1 VM for AAP Gateway / Unified UI, Controller, Private Automation Hub, EDA, Managed Database
   - Each component is on a single container
 
-##### Enterprise Containerized [(CONT-B-ENV-A)](cont-b.env-a/README.md) [(CONT-B-ENV-B)](cont-b.env-b/README.md)
+##### Enterprise Containerized [(CONT-B-ENV-A)](cont-b.env-a/README.md)
 
 - 2 VMs for AAP Gateway / Unified UI - with redis
 - 2 VMs for Automation Controller
@@ -102,11 +102,11 @@ Any Red Hat managed deployment will be considered "Enterprise", thus there is no
 
 Openshift installations require a Red Hat subscription to Red Hat Openshift Container Platform. Deploying on OCP is only supported via the Operator available in the OCP Operator Marketplace.
 
-##### Standard Deployment [(OCP-A)]
+##### Standard Deployment [(OCP-A-ENV-A)](ocp-a.env-a/README.md)
 
 - Operator defaults for the deployment
 
-##### Enterprise Deployment [(OCP-B-ENV-A)](ocp-b.env-a/README.md) [(OCP-B-ENV-B)](ocp-b.env-b/README.md)
+##### Enterprise Deployment [(OCP-B-ENV-A)](ocp-b.env-a/README.md)
 
 - This specific deployment matches both "Enterprise" OCP and what we provide for our SaaS (AAP as a Service) customers.
   - 1 pod for AAP Gateway / Unified UI
