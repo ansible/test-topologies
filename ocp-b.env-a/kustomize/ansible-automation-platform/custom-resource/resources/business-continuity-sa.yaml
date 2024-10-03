@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  annotations:
+    eks.amazonaws.com/role-arn: "${AWS_BUSINESS_CONTINUITY_ROLE}"
+  labels:
+    app.kubernetes.io/name: business-continuity
+  name: business-continuity
+  namespace: ansible-automation-platform

@@ -1,0 +1,169 @@
+---
+apiVersion: builtin
+kind: ReplacementTransformer
+metadata:
+  name: not-important-ansible-automation-platform-custom-resource
+
+replacements:
+- source:
+    kind: ConfigMap
+    name: config
+    namespace: ansible-automation-platform
+    fieldPath: data.AWS_STORAGE_ROLE
+  targets:
+  - select:
+      name: automation-hub
+      namespace: ansible-automation-platform
+      kind: ServiceAccount
+    fieldPaths:
+      - metadata.annotations.[eks.amazonaws.com/role-arn]
+- source:
+    kind: ConfigMap
+    name: config
+    namespace: ansible-automation-platform
+    fieldPath: data.AWS_BUSINESS_CONTINUITY_ROLE
+  targets:
+  - select:
+      name: business-continuity
+      namespace: ansible-automation-platform
+      kind: ServiceAccount
+    fieldPaths:
+      - metadata.annotations.[eks.amazonaws.com/role-arn]
+  - select:
+      name: business-continuity
+      namespace: ansible-automation-platform
+      kind: CronJob
+    fieldPaths:
+      - spec.jobTemplate.spec.template.spec.containers.[name=aoc-utility].env.[name=AWS_ROLE_ARN].value
+- source:
+    kind: ConfigMap
+    name: config
+    namespace: ansible-automation-platform
+    fieldPath: data.CONTROLLER_REPLICAS
+  targets:
+  - select:
+      name: automation-platform
+      namespace: ansible-automation-platform
+      kind: AnsibleAutomationPlatform
+    fieldPaths:
+      - spec.controller.replicas
+- source:
+    kind: ConfigMap
+    name: config
+    namespace: ansible-automation-platform
+    fieldPath: data.GATEWAY_REPLICAS
+  targets:
+  - select:
+      name: automation-platform
+      namespace: ansible-automation-platform
+      kind: AnsibleAutomationPlatform
+    fieldPaths:
+      - spec.api.replicas
+- source:
+    kind: ConfigMap
+    name: config
+    namespace: ansible-automation-platform
+    fieldPath: data.CLUSTER_APP_BASE
+  targets:
+  - select:
+      name: mesh-ingress-0
+      namespace: ansible-automation-platform
+      kind: AutomationControllerMeshIngress
+    fieldPaths:
+      - spec.external_hostname
+    options:
+      delimiter: '.'
+      index: 1
+  - select:
+      name: mesh-ingress-1
+      namespace: ansible-automation-platform
+      kind: AutomationControllerMeshIngress
+    fieldPaths:
+      - spec.external_hostname
+    options:
+      delimiter: '.'
+      index: 1
+  - select:
+      name: automation-platform
+      namespace: ansible-automation-platform
+      kind: AnsibleAutomationPlatform
+    fieldPaths:
+      - spec.route_host
+    options:
+      delimiter: '.'
+      index: 1
+- source:
+    kind: ConfigMap
+    name: config
+    namespace: ansible-automation-platform
+    fieldPath: data.METRICS_ACCOUNT_ID
+  targets:
+  - select:
+      name: metrics-utility-secret
+      namespace: external-secrets
+      kind: ClusterExternalSecret
+    fieldPaths:
+      - spec.externalSecretSpec.target.template.data.METRICS_UTILITY_BILLING_ACCOUNT_ID
+- source:
+    kind: ConfigMap
+    name: config
+    namespace: ansible-automation-platform
+    fieldPath: data.METRICS_RED_HAT_ORG_ID
+  targets:
+  - select:
+      name: metrics-utility-secret
+      namespace: external-secrets
+      kind: ClusterExternalSecret
+    fieldPaths:
+      - spec.externalSecretSpec.target.template.data.METRICS_UTILITY_RED_HAT_ORG_ID
+- source:
+    kind: ConfigMap
+    name: config
+    namespace: ansible-automation-platform
+    fieldPath: data.METRICS_ENABLED
+  targets:
+  - select:
+      name: automation-platform
+      namespace: ansible-automation-platform
+      kind: AnsibleAutomationPlatform
+    fieldPaths:
+      - spec.controller.metrics_utility_console_enabled
+- source:
+    kind: ConfigMap
+    name: config
+    namespace: ansible-automation-platform
+    fieldPath: data.AUTOMATION_CONTROLLER_IMAGE_REF
+  targets:
+  - select:
+      name: aap-mgmt-clean-db-history
+      namespace: ansible-automation-platform
+      kind: CronJob
+    fieldPaths:
+      - spec.jobTemplate.spec.template.spec.containers.[name=aap-mgmt-clean-db-history].image
+- source:
+    kind: ConfigMap
+    name: config
+    namespace: ansible-automation-platform
+    fieldPath: data.DB_JOB_HISTORY_DAYS_TO_RETAIN_DATA
+  targets:
+  - select:
+      name: aap-mgmt-clean-db-history
+      namespace: ansible-automation-platform
+      kind: CronJob
+    fieldPaths:
+      - spec.jobTemplate.spec.template.spec.containers.[name=aap-mgmt-clean-db-history].args.0
+    options:
+      delimiter: '--days '
+      index: 1
+- source:
+    kind: ConfigMap
+    name: config
+    namespace: ansible-automation-platform
+    fieldPath: data.DB_CLEANUP_CRON_SCHEDULE
+  targets:
+  - select:
+      name: aap-mgmt-clean-db-history
+      namespace: ansible-automation-platform
+      kind: CronJob
+    fieldPaths:
+      - spec.schedule

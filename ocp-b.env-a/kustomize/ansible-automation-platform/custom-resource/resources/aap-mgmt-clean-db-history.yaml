@@ -1,0 +1,72 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: aap-mgmt-clean-db-history
+  namespace: ansible-automation-platform
+spec:
+  concurrencyPolicy: Allow
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      template:
+        spec:
+          containers:
+          - command:
+            - /bin/bash
+            - -c
+            args: ["awx-manage cleanup_jobs --days ${DB_JOB_HISTORY_DAYS_TO_RETAIN_DATA}"]
+            image: ${AUTOMATION_CONTROLLER_IMAGE_REF}
+            imagePullPolicy: IfNotPresent
+            name: aap-mgmt-clean-db-history
+            resources:
+              requests:
+                cpu: 100m
+                memory: 100Mi
+            terminationMessagePath: /dev/termination-log
+            terminationMessagePolicy: File
+            volumeMounts:
+            - mountPath: /etc/tower/conf.d/credentials.py
+              name: automation-controller-application-credentials
+              readOnly: true
+              subPath: credentials.py
+            - mountPath: /etc/tower/SECRET_KEY
+              name: automation-controller-secret-key
+              readOnly: true
+              subPath: SECRET_KEY
+            - mountPath: /etc/tower/settings.py
+              name: automation-controller-settings
+              readOnly: true
+              subPath: settings.py
+          dnsPolicy: ClusterFirst
+          imagePullSecrets:
+          - name: redhat-operators-pull-secret
+          restartPolicy: OnFailure
+          schedulerName: default-scheduler
+          securityContext: {}
+          terminationGracePeriodSeconds: 30
+          volumes:
+          - name: automation-controller-application-credentials
+            secret:
+              defaultMode: 420
+              items:
+              - key: credentials.py
+                path: credentials.py
+              secretName: automation-controller-app-credentials
+          - name: automation-controller-secret-key
+            secret:
+              defaultMode: 420
+              items:
+              - key: secret_key
+                path: SECRET_KEY
+              secretName: automation-controller-secret-key
+          - configMap:
+              defaultMode: 420
+              items:
+              - key: settings
+                path: settings.py
+              name: automation-controller-automationcontroller-configmap
+            name: automation-controller-settings
+  schedule: '${DB_CLEANUP_CRON_SCHEDULE}'
+  successfulJobsHistoryLimit: 3
+  suspend: false

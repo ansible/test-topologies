@@ -1,0 +1,12 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: custom-subdomain-certificate
+  namespace: openshift-ingress
+spec:
+  secretName: custom-subdomain-certificate-tls
+  dnsNames:
+    - "*.${CUSTOM_SUBDOMAIN}"
+  issuerRef:
+    name: letsencrypt
+    kind: ClusterIssuer

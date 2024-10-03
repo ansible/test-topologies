@@ -1,0 +1,75 @@
+---
+apiVersion: builtin
+kind: ReplacementTransformer
+metadata:
+  name: not-important-cert-manager-custom-resource
+replacements:
+- source:
+    kind: ConfigMap
+    name: config
+    namespace: cert-manager
+    fieldPath: data.REGION
+  targets:
+  - select:
+      name: letsencrypt
+      namespace: cert-manager
+      kind: ClusterIssuer
+    fieldPaths:
+      - spec.acme.solvers.0.dns01.route53.region
+- source:
+    kind: ConfigMap
+    name: config
+    namespace: cert-manager
+    fieldPath: data.CERT_MANAGER_ROLE
+  targets:
+  - select:
+      name: cert-manager
+      namespace: cert-manager
+      kind: ServiceAccount
+    fieldPaths:
+      - metadata.annotations.[eks.amazonaws.com/role-arn]
+- source:
+    kind: ConfigMap
+    name: config
+    namespace: cert-manager
+    fieldPath: data.CUSTOM_SUBDOMAIN
+  targets:
+  - select:
+      name: custom-subdomain-certificate
+      namespace: openshift-ingress
+      kind: Certificate
+    fieldPaths:
+      - spec.dnsNames.*
+    options:
+      delimiter: '.'
+      index: 1
+  - select:
+      name: custom-subdomain-ingress-controller
+      namespace: openshift-ingress-operator
+      kind: IngressController
+    fieldPaths:
+      - spec.domain
+- source:
+    kind: ConfigMap
+    name: config
+    namespace: cert-manager
+    fieldPath: data.HOSTED_ZONE_ID
+  targets:
+  - select:
+      name: letsencrypt
+      namespace: cert-manager
+      kind: ClusterIssuer
+    fieldPaths:
+      - spec.acme.solvers.0.dns01.route53.hostedZoneID
+- source:
+    kind: ConfigMap
+    name: config
+    namespace: cert-manager
+    fieldPath: data.ROUTE53_AWS_MANAGEMENT_ROLE
+  targets:
+  - select:
+      name: letsencrypt
+      namespace: cert-manager
+      kind: ClusterIssuer
+    fieldPaths:
+      - spec.acme.solvers.0.dns01.route53.role
