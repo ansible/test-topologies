@@ -1,0 +1,121 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: bry-rds-init-db-job
+  namespace: ansible-automation-platform
+spec:
+  template:
+    spec:
+      automountServiceAccountToken: false
+      containers:
+        - name: rds-init-db-job
+          image: bitnami/postgresql:latest
+          command:
+          - /bin/bash
+          - -c
+          - |
+            #!/usr/bin/env bash
+            set -e
+
+            # Define databases and the corresponding environment variable for username/password
+            declare -A databases_users=( 
+              ["gateway"]="DATABASE_GATEWAY_USERNAME DATABASE_GATEWAY_PASSWORD" 
+              ["automationcontroller"]="DATABASE_CONTROLLER_USERNAME DATABASE_CONTROLLER_PASSWORD" 
+              ["automationhub"]="DATABASE_HUB_USERNAME DATABASE_HUB_PASSWORD"
+            )
+
+            # Default database to connect
+            default_db="postgres"
+        
+            function is_database() {
+              psql -d "$default_db" -lqt | cut -d \| -f 1 | grep -wq "$1"
+            }
+
+            function is_user() {
+              psql -d "$default_db" -tAc "SELECT 1 FROM pg_roles WHERE rolname='$1'" | grep -q 1
+            }
+
+            for database in "${!databases_users[@]}"
+            do
+              # Get the environment variable names for username and password
+              db_env_vars=(${databases_users[$database]})
+              db_user_var=${db_env_vars[0]}
+              db_password_var=${db_env_vars[1]}
+              
+              # Get the actual username and password from the environment variables
+              db_user="${!db_user_var}"
+              db_password="${!db_password_var}"
+
+              echo "Checking for database ${database} ..."
+
+              if is_database "$database"; then
+                echo "Database ${database} already exists."
+              else
+                echo "Creating database ${database}."
+                createdb "${database}"
+              fi
+
+              echo "Checking for user ${db_user} ..."
+
+              if is_user "$db_user"; then
+                echo "User ${db_user} already exists."
+              else
+                echo "Creating user ${db_user}."
+                psql -d "$default_db" -c "CREATE USER ${db_user} WITH PASSWORD '${db_password}';"
+              fi
+
+              echo "Granting all privileges on ${database} to ${db_user}."
+              psql -d "$default_db" -c "ALTER DATABASE ${database} OWNER TO ${db_user};"
+              psql -d "$default_db" -c "GRANT ALL PRIVILEGES ON DATABASE ${database} TO ${db_user};"
+            done
+          resources:
+            limits:
+              cpu: '0.5'
+              memory: 100Mi
+          env:
+            - name: PGHOST
+              valueFrom:
+                secretKeyRef:
+                  name: rds-init-db-configuration
+                  key: host       
+            - name: PGUSER
+              valueFrom:
+                secretKeyRef:
+                  name: rds-init-db-configuration
+                  key: admin_username   
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: rds-init-db-configuration
+                  key: admin_password
+            - name: DATABASE_CONTROLLER_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: rds-init-db-configuration
+                  key: controller_username
+            - name: DATABASE_HUB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: rds-init-db-configuration
+                  key: hub_username
+            - name: DATABASE_GATEWAY_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: rds-init-db-configuration
+                  key: gateway_username
+            - name: DATABASE_CONTROLLER_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: rds-init-db-configuration
+                  key: controller_password
+            - name: DATABASE_HUB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: rds-init-db-configuration
+                  key: hub_password
+            - name: DATABASE_GATEWAY_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: rds-init-db-configuration
+                  key: gateway_password
+      restartPolicy: Never

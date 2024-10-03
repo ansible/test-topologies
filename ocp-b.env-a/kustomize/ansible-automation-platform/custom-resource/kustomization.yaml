@@ -1,0 +1,53 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+sortOptions:
+  order: fifo
+
+resources:
+  - resources
+
+configMapGenerator:
+  - name: config
+    namespace: ansible-automation-platform
+    options:
+      disableNameSuffixHash: true
+    envs:
+      - config.env
+
+secretGenerator:
+  - name: automation-hub-postgres-configuration
+    namespace: ansible-automation-platform
+    files:
+      - secrets-hub-postgres.env
+  - name: automation-platform-postgres-configuration
+    namespace: ansible-automation-platform
+    files:
+      - secrets-platform-postgres.env
+  - name: automation-platform-redis-configuration
+    namespace: ansible-automation-platform
+    files:
+      - secrets-platform-redis.env
+  - name: automation-hub-s3-secret
+    namespace: ansible-automation-platform
+    files:
+      - secrets-hub-s3.env
+  - name: automation-platform-admin-password
+    namespace: ansible-automation-platform
+    files:
+      - secrets-platform-admin-pass.env
+  - name: automation-controller-admin-password
+    namespace: ansible-automation-platform
+    files:
+      - secrets-controller-admin-pass.env
+  - name: automation-hub-admin-password
+    namespace: ansible-automation-platform
+    files:
+      - secrets-hub-admin-pass.env
+  - name: ansible-automation-job-global-pull-secret
+    namespace: ansible-automation-platform
+    files:
+      - secrets-job-pull-secret.env
+transformers:
+  - transformers

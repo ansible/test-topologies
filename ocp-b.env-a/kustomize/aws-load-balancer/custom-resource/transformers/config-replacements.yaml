@@ -1,0 +1,69 @@
+---
+apiVersion: builtin
+kind: ReplacementTransformer
+metadata:
+  name: not-important-aws-load-balancer-custom-resource
+replacements:
+- source:
+    kind: ConfigMap
+    name: config
+    namespace: aws-load-balancer-operator
+    fieldPath: data.ALB_AWS_CERT_ARN
+  targets:
+  - select:
+      name: gateway-ingress
+      namespace: ansible-automation-platform
+      kind: Ingress
+    fieldPaths:
+      - metadata.annotations.[alb.ingress.kubernetes.io/certificate-arn]
+- source:
+    kind: ConfigMap
+    name: config
+    namespace: aws-load-balancer-operator
+    fieldPath: data.ALB_AWS_NAME
+  targets:
+  - select:
+      name: gateway-ingress
+      namespace: ansible-automation-platform
+      kind: Ingress
+    fieldPaths:
+      - metadata.annotations.[alb.ingress.kubernetes.io/load-balancer-name]
+- source:
+    kind: ConfigMap
+    name: config
+    namespace: aws-load-balancer-operator
+    fieldPath: data.CLUSTER_NAME
+  targets:
+  - select:
+      name: gateway-ingress
+      namespace: ansible-automation-platform
+      kind: Ingress
+    fieldPaths:
+      - metadata.annotations.[alb.ingress.kubernetes.io/tags]
+    options:
+      delimiter: '='
+      index: 1
+- source:
+    kind: ConfigMap
+    name: config
+    namespace: aws-load-balancer-operator
+    fieldPath: data.AWS_WAF_WEB_ACL_ARN
+  targets:
+  - select:
+      name: gateway-ingress
+      namespace: ansible-automation-platform
+      kind: Ingress
+    fieldPaths:
+      - metadata.annotations.[alb.ingress.kubernetes.io/wafv2-acl-arn]
+- source:
+    kind: ConfigMap
+    name: config
+    namespace: aws-load-balancer-operator
+    fieldPath: data.GATEWAY_URL
+  targets:
+  - select:
+      name: gateway-ingress
+      namespace: ansible-automation-platform
+      kind: Ingress
+    fieldPaths:
+      - spec.rules.0.host

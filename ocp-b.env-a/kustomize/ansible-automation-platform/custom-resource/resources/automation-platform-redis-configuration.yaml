@@ -1,0 +1,48 @@
+apiVersion: external-secrets.io/v1beta1
+kind: ClusterExternalSecret
+metadata:
+  name: automation-platform-redis-configuration
+  namespace: external-secrets
+spec:
+  externalSecretName: "automation-platform-redis-configuration"
+  namespaceSelector:
+    matchLabels:
+      kubernetes.io/metadata.name: ansible-automation-platform
+  refreshTime: 1m
+  externalSecretSpec:
+    refreshInterval: 1m
+    secretStoreRef:
+      name: cluster-secret-store
+      kind: ClusterSecretStore
+    target:
+      name: automation-platform-redis-configuration
+      template:
+        type: Opaque
+        metadata:
+          labels:
+            app.kubernetes.io/part-of: "automation-platform"
+        data:
+          host: "{{ .host }}"
+          port: '6379'
+          username: "{{ .username }}"
+          password: "{{ .password }}"
+          type: unmanaged
+          redis_tls: 'true'
+          redis_ssl_cert_reqs: 'none'
+          redis_key_file: ""
+          redis_cert_file: ""
+          redis_ca_cert_file: ""
+          redis_mode: 'cluster'
+    data:
+    - secretKey: host
+      remoteRef:
+        key: "${CLUSTER_NAME}"
+        property: REDIS_CLUSTER_ENDPOINT
+    - secretKey: password
+      remoteRef:
+        key: "${CLUSTER_NAME}"
+        property: REDIS_GATEWAY_PASSWORD
+    - secretKey: username
+      remoteRef:
+        key: "${CLUSTER_NAME}"
+        property: REDIS_GATEWAY_USERNAME

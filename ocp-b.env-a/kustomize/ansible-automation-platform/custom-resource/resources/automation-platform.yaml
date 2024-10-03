@@ -1,0 +1,170 @@
+apiVersion: aap.ansible.com/v1alpha1
+kind: AnsibleAutomationPlatform
+metadata:
+  name: automation-platform
+  namespace: ansible-automation-platform
+spec:
+  api:
+    replicas: 1
+  redis:
+    redis_secret: automation-platform-redis-configuration
+  redis_mode: cluster
+  database:
+    database_secret: automation-platform-postgres-configuration
+  no_log: false
+  extra_settings:
+    - setting: ANSIBLE_BASE_MANAGED_CLOUD_INSTALL
+      value: 'True'
+    - setting: REDIRECT_IS_HTTPS
+      value: 'True'
+  image_pull_policy: Always
+  image_pull_secrets:
+   - redhat-operators-pull-secret
+  route_host: platform.${APPS_DOMAIN}
+  controller:
+    name: automation-controller
+    admin_user: admin
+    auto_upgrade: true
+    create_preload_data: true
+    ee_extra_env: |
+      - name: RECEPTOR_KUBE_SUPPORT_RECONNECT
+        value: enabled
+    ee_images:
+      - name: Default execution environment
+        image: registry.redhat.io/ansible-automation-platform-24/ee-supported-rhel9:latest
+      - name: Minimal execution environment
+        image: registry.redhat.io/ansible-automation-platform-24/ee-minimal-rhel9:latest
+    ee_pull_credentials_secret: automation-controller-ee-pull-credentials
+    garbage_collect_secrets: false
+    image_pull_policy: IfNotPresent
+    ingress_type: none
+    ipv6_disabled: false
+    loadbalancer_ip: ""
+    loadbalancer_port: 80
+    loadbalancer_protocol: http
+    metrics_utility_console_enabled: false
+    metrics_utility_configmap: metrics-utility-config
+    metrics_utility_secret: metrics-utility-secret
+    metrics_utility_cronjob_gather_schedule: '@hourly'
+    no_log: true
+    postgres_configuration_secret: automation-controller-postgres-configuration
+    postgres_keepalives: true
+    postgres_keepalives_count: 5
+    postgres_keepalives_idle: 5
+    postgres_keepalives_interval: 5
+    projects_persistence: false
+    projects_storage_access_mode: ReadWriteMany
+    projects_storage_size: 8Gi
+    replicas: 1
+    service_type: NodePort
+    set_self_labels: true
+    task_privileged: false
+    topology_spread_constraints: |
+      - maxSkew: 100
+        topologyKey: "topology.kubernetes.io/zone"
+        whenUnsatisfiable: "ScheduleAnyway"
+        labelSelector:
+          matchLabels:
+            app.kubernetes.io/component: automationcontroller
+    image_pull_secrets:
+      - redhat-operators-pull-secret
+    api_urlpattern_prefix: 'controller'
+    extra_settings:
+      - setting: AWX_RUNNER_KEEPALIVE_SECONDS
+        value: 240
+      - setting: SUBSCRIPTION_USAGE_MODEL
+        value: '""'
+      - setting: AWX_CONTAINER_GROUP_DEFAULT_NAMESPACE
+        value: '"ansible-automation-job"'
+      - setting: ANSIBLE_BASE_JWT_KEY
+        value: '"http://automation-platform"'
+      - setting: ANSIBLE_BASE_JWT_REDIRECT_TYPE
+        value: '"awx"'
+      - setting: SYSTEM_TASK_ABS_MEM
+        value: '"10Gi"'
+      - setting: SYSTEM_TASK_ABS_CPU
+        value: '"3"'
+  hub:
+    name: automation-hub
+    api:
+    log_level: INFO
+    replicas: 1
+    resource_requirements:
+      requests:
+        cpu: 200m
+        memory: 512Mi
+    content:
+      log_level: INFO
+      replicas: 1
+      resource_requirements:
+        requests:
+          cpu: 200m
+          memory: 512Mi
+    gunicorn_api_workers: 2
+    gunicorn_content_workers: 2
+    gunicorn_timeout: 90
+    haproxy_timeout: 180s
+    image_pull_policy: IfNotPresent
+    ingress_type: none
+    loadbalancer_port: 80
+    loadbalancer_protocol: http
+    nginx_client_max_body_size: 10m
+    nginx_proxy_connect_timeout: 120s
+    nginx_proxy_read_timeout: 120s
+    nginx_proxy_send_timeout: 120s
+    no_log: true
+    postgres_configuration_secret: automation-hub-postgres-configuration
+    redis:
+      log_level: INFO
+      replicas: 1
+      resource_requirements:
+        requests:
+          cpu: 200m
+          memory: 512Mi
+    redis_storage_class: gp3-csi
+    resource_manager:
+      replicas: 1
+    storage_type: S3
+    topology_spread_constraints: |
+      - maxSkew: 100
+        topologyKey: "topology.kubernetes.io/zone"
+        whenUnsatisfiable: "ScheduleAnyway"
+        labelSelector:
+          matchLabels:
+            app.kubernetes.io/part-of: automationhub
+    object_storage_s3_secret: automation-hub-s3-secret
+    pulp_settings:
+      cache_enabled: false
+      redirect_to_object_storage: "False"
+      analytics: false
+      galaxy_collection_signing_service: ""
+      galaxy_container_signing_service: ""
+      token_auth_disabled: 'False'
+      token_signature_algorithm: 'ES256'
+      # connected_ansible_controllers:
+      #   - "https://${CONTROLLER_URL}"
+      GALAXY_AUTHENTICATION_CLASSES:
+        - "galaxy_ng.app.auth.session.SessionAuthentication"
+        - "ansible_base.jwt_consumer.hub.auth.HubJWTAuth"
+        - "rest_framework.authentication.TokenAuthentication"
+        - "rest_framework.authentication.BasicAuthentication"
+      ANSIBLE_BASE_JWT_VALIDATE_CERT: True
+      ANSIBLE_BASE_JWT_KEY: 'http://automation-platform'
+      ANSIBLE_BASE_JWT_REDIRECT_TYPE: 'hub'
+    web:
+      replicas: 1
+      resource_requirements:
+        requests:
+          cpu: 200m
+          memory: 512Mi
+    worker:
+      replicas: 2
+      resource_requirements:
+        requests:
+          cpu: 200m
+          memory: 512Mi
+    image_pull_secrets:
+      - redhat-operators-pull-secret
+  eda:
+    disabled: true
+  service_type: NodePort

@@ -1,0 +1,9 @@
+apiVersion: networking.olm.openshift.io/v1
+kind: AWSLoadBalancerController
+metadata:
+  name: cluster
+spec:
+  credentials:
+    name: aws-load-balancer-operator
+  enabledAddons:
+    - AWSWAFv2

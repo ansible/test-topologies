@@ -1,0 +1,50 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: business-continuity
+  namespace: ansible-automation-platform
+spec:
+  # Schedule to run daily at 00 00 hrs
+  schedule: "0 0 * * *"
+  suspend: false
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: aoc-utility
+            image: quay.io/ansible-on-clouds/aoc-utility:latest
+            imagePullPolicy: Always
+            args: ["/usr/bin/runner_user.sh && ansible-playbook /runner/playbooks/backup_ansible_platform.yml"]
+            command: ["/bin/sh", "-c"]
+            volumeMounts:
+            - mountPath: /backup
+              name: backup-volume
+            env:
+            - name: INSTANCE_TYPE
+              value: customer
+            - name: AWS_WEB_IDENTITY_TOKEN_FILE
+              value: /var/run/secrets/eks.amazonaws.com/serviceaccount/token
+            - name: AWS_ROLE_ARN
+              value: ${AWS_BUSINESS_CONTINUITY_ROLE}
+            - name: PGHOST
+              valueFrom:
+                secretKeyRef:
+                  name: automation-controller-postgres-configuration
+                  key: host
+            - name: PGUSER
+              valueFrom:
+                secretKeyRef:
+                  name: automation-controller-postgres-configuration
+                  key: username
+            - name: PGPASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: automation-controller-postgres-configuration
+                  key: password
+          restartPolicy: Never
+          volumes:
+          - name: backup-volume
+            emptyDir: {}
+          serviceAccount: business-continuity
+          serviceAccountName: business-continuity

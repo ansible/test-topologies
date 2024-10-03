@@ -1,0 +1,39 @@
+---
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+sortOptions:
+  order: fifo
+
+generatorOptions:
+  disableNameSuffixHash: false
+
+resources:
+  - automation-controller-job-namespace.yaml
+  - automation-controller-job-sa.yaml
+  - automation-controller-job-role.yaml
+  - automation-controller-job-rolebinding.yaml
+  - automation-controller-job-limitrange.yaml
+  - automation-controller-ee-pull-secret.yaml
+  - automation-controller-postgres-configuration.yaml
+  - automation-hub-sa.yaml
+  - automation-hub-postgres-configuration.yaml
+  - automation-hub-s3-secret.yaml
+  - automation-controller-admin-password.yaml
+  - automation-controller-mesh-ingress.yaml
+  - automation-hub-admin-password.yaml
+  - automation-platform.yaml
+  - automation-platform-admin-password.yaml
+  - automation-platform-postgres-configuration.yaml
+  - automation-platform-redis-configuration.yaml
+  - business-continuity-sa.yaml
+  - business-continuity-clusterrole.yaml
+  - business-continuity-clusterrolebinding.yaml
+  - business-continuity-cronjob.yaml
+  - aap-mgmt-clean-db-history.yaml
+
+patches:
+  - target:
+      kind: ServiceAccount
+      name: default
+    path: automation-controller-job-sa-patch.yaml

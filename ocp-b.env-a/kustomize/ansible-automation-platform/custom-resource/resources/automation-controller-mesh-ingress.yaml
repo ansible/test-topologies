@@ -1,0 +1,24 @@
+---
+apiVersion: automationcontroller.ansible.com/v1alpha1
+kind: AutomationControllerMeshIngress
+metadata:
+  name: mesh-ingress-0
+  namespace: ansible-automation-platform
+spec:
+  deployment_name: automation-controller
+  external_hostname: mesh-ingress-0.${APPS_DOMAIN}
+  ingress_type: route
+  image_pull_secrets:
+  - redhat-operators-pull-secret
+---
+apiVersion: automationcontroller.ansible.com/v1alpha1
+kind: AutomationControllerMeshIngress
+metadata:
+  name: mesh-ingress-1
+  namespace: ansible-automation-platform
+spec:
+  deployment_name: automation-controller
+  external_hostname: mesh-ingress-1.${APPS_DOMAIN}
+  ingress_type: route
+  image_pull_secrets:
+  - redhat-operators-pull-secret

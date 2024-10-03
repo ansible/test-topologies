@@ -1,0 +1,46 @@
+apiVersion: external-secrets.io/v1beta1
+kind: ClusterExternalSecret
+metadata:
+  name: automation-controller-postgres-configuration
+  namespace: external-secrets
+spec:
+  externalSecretName: "automation-controller-postgres-configuration"  
+  namespaceSelector:
+    matchLabels: 
+      kubernetes.io/metadata.name: ansible-automation-platform
+  refreshTime: 1m
+  externalSecretSpec:
+    refreshInterval: 1m
+    secretStoreRef:
+      name: cluster-secret-store
+      kind: ClusterSecretStore
+    target:
+      name: automation-controller-postgres-configuration
+      template:
+        type: Opaque
+        metadata:
+          labels:
+            app.kubernetes.io/component: automationcontroller
+            app.kubernetes.io/managed-by: automationcontroller-operator
+            app.kubernetes.io/operator-version: ""
+            app.kubernetes.io/part-of: "automation-controller"
+        data:
+          host: "{{ .host }}"
+          username: "{{ .username }}"
+          password: "{{ .password }}"
+          database: automationcontroller
+          port: '5432'
+          type: unmanaged
+    data:
+    - secretKey: host
+      remoteRef:
+        key: "${CLUSTER_NAME}"
+        property: DATABASE_HOST
+    - secretKey: password
+      remoteRef:
+        key: "${CLUSTER_NAME}"
+        property: DATABASE_CONTROLLER_PASSWORD
+    - secretKey: username
+      remoteRef:
+        key: "${CLUSTER_NAME}"
+        property: DATABASE_CONTROLLER_USERNAME
