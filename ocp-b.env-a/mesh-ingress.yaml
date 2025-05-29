@@ -1,0 +1,11 @@
+apiVersion: automationcontroller.ansible.com/v1alpha1
+kind: AutomationControllerMeshIngress
+metadata:
+  name: mesh-ingress-0  # Adjust the name here and below for each mesh ingress deployed
+  namespace: ansible-automation-platform
+spec:
+  deployment_name: automation-controller
+  external_hostname: mesh-ingress-0.<application domain of OpenShift cluster>
+  image_pull_secrets:
+  - redhat-operators-pull-secret
+  ingress_type: route
