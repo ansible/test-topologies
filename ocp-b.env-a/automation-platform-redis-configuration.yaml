@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  labels:
+    app.kubernetes.io/part-of: automation-platform
+  name: automation-platform-redis-configuration # Change this for each redis secret
+  namespace: ansible-automation-platform
+type: Opaque
+data:
+  host: <fully qualifed hostname encoded in base64>
+  username: <username encoded in base64>
+  password: <password encoded in base64>
+  port: NjM3OQ== # 6379
+  redis_ca_cert_file: ""
+  redis_cert_file: ""
+  redis_key_file: ""
+  redis_mode: Y2x1c3Rlcg== # cluster
+  redis_ssl_cert_reqs: bm9uZQ== # none
+  redis_tls: dHJ1ZQ== # true
+  type: dW5tYW5hZ2Vk # unmanaged
+immutable: false

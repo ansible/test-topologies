@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  labels:
+    app.kubernetes.io/part-of: automation-platform
+  name: automation-platform-postgres-configuration  # Change this for each database secret
+  namespace: ansible-automation-platform
+type: Opaque
+data:
+  # The following field must be unique for each component: gateway, controller, hub, eda, etc.
+  database: <name of database encoded in base64>
+  host: <full qualifed hostname encoded in base64>
+  username: <username encoded in base64>  # Username can be the same for each database
+  password: <password encoded in base64>  # Password can be the same for each database
+  port: NTQzMg== # 5432
+  type: dW5tYW5hZ2Vk # unmanaged
+immutable: "False"

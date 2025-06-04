@@ -1,0 +1,85 @@
+apiVersion: aap.ansible.com/v1alpha1
+kind: AnsibleAutomationPlatform
+metadata:
+  name: automation-platform
+  namespace: ansible-automation-platform
+spec:
+  redis:
+    redis_secret: automation-platform-redis-configuration
+    eda_redis_secret: automation-eda-redis-configuration
+  redis_mode: cluster
+  database:
+    database_secret: automation-platform-postgres-configuration
+  extra_settings:
+    - setting: REDIRECT_IS_HTTPS
+      value: 'True'
+  image_pull_policy: Always
+  image_pull_secrets:
+   - redhat-operators-pull-secret
+  route_host: platform.<application domain of OpenShift cluster>
+  service_type: NodePort
+  controller:
+    name: automation-controller
+    ee_extra_env: |
+      - name: RECEPTOR_KUBE_SUPPORT_RECONNECT
+        value: enabled
+    ee_images:
+      - name: Default execution environment
+        image: registry.redhat.io/ansible-automation-platform-25/ee-supported-rhel9:latest
+      - name: Minimal execution environment
+        image: registry.redhat.io/ansible-automation-platform-25/ee-minimal-rhel9:latest
+    ee_pull_credentials_secret: automation-controller-ee-pull-credentials
+    garbage_collect_secrets: false
+    image_pull_policy: IfNotPresent
+    ingress_type: none
+    ipv6_disabled: false
+    loadbalancer_ip: ""
+    loadbalancer_port: 80
+    loadbalancer_protocol: http
+    postgres_configuration_secret: automation-controller-postgres-configuration
+    service_type: NodePort
+    image_pull_secrets:
+      - redhat-operators-pull-secret
+    api_urlpattern_prefix: 'controller'
+    extra_settings:
+      - setting: AWX_RUNNER_KEEPALIVE_SECONDS
+        value: 240
+      - setting: ANSIBLE_BASE_JWT_KEY
+        value: '"http://automation-platform"'
+      - setting: ANSIBLE_BASE_JWT_REDIRECT_TYPE
+        value: '"awx"'
+      - setting: TOWER_URL_BASE
+        value: <value should match route_host setting>
+  hub:
+    name: automation-hub
+    postgres_configuration_secret: automation-hub-postgres-configuration
+    # The parameter below can change based on the type of storage used to support
+    # automation hub.
+    #
+    # Example to configure Azure blob storage:
+    # object_storage_azure_secret: automation-hub-storage-secret
+    object_storage_s3_secret: automation-hub-storage-secret
+    # Only ONE storage backend should be configured!
+    pulp_settings:
+      cache_enabled: false
+      redirect_to_object_storage: "False"
+      galaxy_collection_signing_service: ""
+      galaxy_container_signing_service: ""
+      token_auth_disabled: 'False'
+      token_signature_algorithm: 'ES256'
+      GALAXY_AUTHENTICATION_CLASSES:
+        - "galaxy_ng.app.auth.session.SessionAuthentication"
+        - "ansible_base.jwt_consumer.hub.auth.HubJWTAuth"
+        - "rest_framework.authentication.TokenAuthentication"
+        - "rest_framework.authentication.BasicAuthentication"
+      ANSIBLE_BASE_JWT_VALIDATE_CERT: True
+      ANSIBLE_BASE_JWT_KEY: 'http://automation-platform'
+      ANSIBLE_BASE_JWT_REDIRECT_TYPE: 'hub'
+    image_pull_secrets:
+      - redhat-operators-pull-secret
+  eda:
+    name: automation-eda
+    database:
+      database_secret: automation-eda-postgres-configuration
+    image_pull_secrets:
+      - redhat-operators-pull-secret

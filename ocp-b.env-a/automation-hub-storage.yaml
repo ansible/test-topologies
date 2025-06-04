@@ -1,0 +1,26 @@
+apiVersion: v1
+kind: Secret
+metadata:
+  name: automation-hub-storage-secret
+  namespace: ansible-automation-platform
+type: Opaque
+data:
+  # This storage template demonstrates some of the parameters which
+  # can be used to configure storage for automation hub.
+
+  # Refer to the product documentation for details on the
+  # required fields and associated values.
+
+  # The fields below can be used to configure AWS S3 storage
+  s3-access-key-id: <access key encoded in base64>
+  s3-bucket-name: <bucket name encoded in base64>
+  s3-region: <region encoded in base64>
+  s3-secret-access-key: <secret access key encoded in base64>
+
+  # The fields below can be used to configure Azure storage
+  azure-account-key: <account key encoded in base64>
+  azure-account-name: <account name encoded in base64>
+  azure-container: <container name encoded in base64>
+  azure-container-path: <container path encoded in base64>
+  azure-connection-string: <connection string encoded in base64>
+immutable: false
