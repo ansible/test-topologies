@@ -17,5 +17,7 @@ data:
   redis_mode: Y2x1c3Rlcg== # cluster
   redis_ssl_cert_reqs: bm9uZQ== # none
   redis_tls: dHJ1ZQ== # true
+  cluster_endpoint: <required if external redis service is a cluster> # format ":[,:]*"
   type: dW5tYW5hZ2Vk # unmanaged
 immutable: false
+
